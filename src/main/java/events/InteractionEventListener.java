@@ -74,8 +74,6 @@ public class InteractionEventListener extends ListenerAdapter {
         }
     }
 
-    static WikiSearch obj;
-
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         super.onSlashCommandInteraction(event);
@@ -87,8 +85,12 @@ public class InteractionEventListener extends ListenerAdapter {
             event.reply(processMessageSpell(message)).setEphemeral(true).queue();
         }
 
+        if(event.getName().equals("giverole")) {
+            var message = Objects.requireNonNull(event.getInteraction().getOption("role")).getAsString();
+            event.reply(processMessageSpell(message)).setEphemeral(true).queue();
+        }
 
-        // optimize if possible
+        // optimize
         if(event.getName().equals("wiki")) {
             var message = Objects.requireNonNull(event.getInteraction().getOption("query")).getAsString();
             if(isAlphaNumeric(message)) {
@@ -119,8 +121,6 @@ public class InteractionEventListener extends ListenerAdapter {
 
                 event.reply("").addEmbeds(messageEmbed).setEphemeral(true).queue();
             }
-
-
         }
     }
 }

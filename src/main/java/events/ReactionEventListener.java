@@ -14,7 +14,7 @@ public class ReactionEventListener extends ListenerAdapter {
 
     // work on fixing
     @Override
-    public void onMessageReactionAdd(MessageReactionAddEvent event) {
+    public void onMessageReactionAdd(@NotNull MessageReactionAddEvent event) {
         super.onMessageReactionAdd(event);
 
         Message message = event.getChannel().retrieveMessageById(event.getMessageId()).complete();
