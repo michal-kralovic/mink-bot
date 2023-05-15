@@ -9,6 +9,6 @@ public class ReadyEventListener implements EventListener {
     @Override
     public void onEvent(@NotNull GenericEvent genericEvent) {
         if (genericEvent instanceof ReadyEvent)
-            System.out.println("The bot is ready, and online!");
+            System.out.println("The bot is ready and online!");
     }
 }

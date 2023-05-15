@@ -1,7 +1,6 @@
 package events;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -41,10 +40,6 @@ public class InteractionEventListener extends ListenerAdapter {
     public boolean isAlphaNumeric(String string) {
         String regex = "['!?a-zA-Z0-9\s]+";
         return string.matches(regex);
-    }
-    public boolean isHexadecimalColor(String color) {
-        String regex = "^[#0-9A-Fa-f]+$";
-        return color.matches(regex)  && color.startsWith("#") && color.length() == 7;
     }
 
     public String processMessageSpell(String message) {
@@ -90,17 +85,6 @@ public class InteractionEventListener extends ListenerAdapter {
         return embedBuilder.build();
     }
 
-    public MessageEmbed stockEmbedWithMessage(String head, String titleAdditionalString, String body) {
-
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-
-        embedBuilder.setTitle(head + " " + titleAdditionalString)
-                .setDescription(body)
-                .setColor(Color.CYAN);
-
-        return embedBuilder.build();
-    }
-
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         super.onSlashCommandInteraction(event);
@@ -110,33 +94,24 @@ public class InteractionEventListener extends ListenerAdapter {
             event.reply(processMessageSpell(message)).setEphemeral(true).queue();
         }
 
+        // Role Management
         if(event.getName().equals("giverole")) {
-            var role = Objects.requireNonNull(event.getInteraction().getOption("role")).getAsRole();
-            Guild guild = event.getGuild();
-            var colorOption = event.getInteraction().getOption("color");
-
-            if (colorOption != null) {
-                var color = colorOption.getAsString();
-
-                if (isHexadecimalColor(color)) {
-                    role.getManager().setColor(Color.decode(color)).queue();
-                    guild.retrieveMember(event.getUser()).queue(member -> {
-                        guild.addRoleToMember(member, role).queue();
-                        event.reply("").addEmbeds(stockEmbed("Roles", "\nSuccessfully gave you the role \"" + role.getName() + "\" with the color: " + color)).setEphemeral(true).queue();
-                    });
-                } else {
-                    event.reply("").addEmbeds(stockEmbed("Roles", "Invalid color. (HEX colors only!). Color used: " + color)).setEphemeral(true).queue();
-                }
-            } else {
-                guild.retrieveMember(event.getUser()).queue(member -> {
-                    guild.addRoleToMember(member, role).queue();
-                    event.reply("").addEmbeds(stockEmbed("Roles", "\nSuccessfully gave you the role \"" + role.getName() + "\"")).setEphemeral(true).queue();
-                });
-
-            }
+            MinkBotRoleManagement minkBotRoleManagement = new MinkBotRoleManagement();
+            minkBotRoleManagement.roleGive(event);
+        }
+        if(event.getName().equals("createrole")) {
+            MinkBotRoleManagement minkBotRoleManagement = new MinkBotRoleManagement();
+            minkBotRoleManagement.roleCreate(event);
+        }
+        if(event.getName().equals("updaterole")) {
+            MinkBotRoleManagement minkBotRoleManagement = new MinkBotRoleManagement();
+            minkBotRoleManagement.roleUpdate(event);
+        }
+        if(event.getName().equals("deleterole")) {
+            MinkBotRoleManagement minkBotRoleManagement = new MinkBotRoleManagement();
+            minkBotRoleManagement.roleDelete(event);
         }
 
-        // optimize
         if(event.getName().equals("wiki")) {
             var message = Objects.requireNonNull(event.getInteraction().getOption("query")).getAsString();
             String embedTitle = "Wikipedia | Query";
@@ -152,7 +127,7 @@ public class InteractionEventListener extends ListenerAdapter {
                     e.printStackTrace();
                 }
 
-                event.reply("").addEmbeds(stockEmbedWithMessage(embedTitle, message, lengthCorrect(output))).setEphemeral(true).queue();
+                event.reply("").addEmbeds(stockEmbed(embedTitle + " " + message, lengthCorrect(output) + ".")).setEphemeral(true).queue();
             } else {
                 event.reply("").addEmbeds(stockEmbed(embedTitle, "Incorrect query. Can't have special characters!")).setEphemeral(true).queue();
             }

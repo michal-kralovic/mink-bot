@@ -19,11 +19,27 @@ public class MinkBot {
                 .setActivity(Activity.watching("a movie"))
                 .addEventListeners(new ReadyEventListener(),
                         new InteractionEventListener(),
-                        new ReactionEventListener())
+                        new ReactionEventListener(),
+                        new MinkBotRoleManagement())
                 .build();
 
         jda.upsertCommand("spell", "Spells out your message using regional indicator emojis!").addOption(OptionType.STRING, "message", "Message to be spelled out.", true, false).queue();
         jda.upsertCommand("wiki", "Wikipedia search!").addOption(OptionType.STRING, "query", "Your wiki query.", true, false).queue();
-        jda.upsertCommand("giverole", "Role giving!").addOption(OptionType.ROLE, "role", "Get yourself a role!", true, false).addOption(OptionType.STRING, "color", "(OPTIONAL) Change color (hex).", false, false).queue();
+
+        // Role Management
+        jda.upsertCommand("createrole", "Role creating!")
+                .addOption(OptionType.STRING, "role-name", "The role's name!", true, false)
+                .addOption(OptionType.BOOLEAN, "mentionability", "(OPTIONAL) Set mentionability (true/false).", true, false)
+                .addOption(OptionType.STRING, "color", "(OPTIONAL) Set color (hex).", false, false)
+                .queue();
+        jda.upsertCommand("updaterole", "Role updating!")
+                        .addOption(OptionType.ROLE, "role", "The role's name!", true, false)
+                        .addOption(OptionType.STRING, "role-name", "(OPTIONAL) Change the role's name.", false, false)
+                        .addOption(OptionType.STRING, "color", "(OPTIONAL) Change color (HEX).", false, false).queue();
+        jda.upsertCommand("deleterole", "Role deleting! Be careful!")
+                .addOption(OptionType.ROLE, "role", "The role's name!", true, false).queue();
+        jda.upsertCommand("giverole", "Role giving!")
+                        .addOption(OptionType.ROLE, "role", "Get yourself a role!", true, false)
+                        .addOption(OptionType.STRING, "color", "(OPTIONAL) Change color (HEX).", false, false).queue();
     }
 }
