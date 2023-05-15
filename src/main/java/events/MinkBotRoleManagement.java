@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.RoleAction;
 import org.jetbrains.annotations.NotNull;
@@ -142,7 +143,6 @@ public class MinkBotRoleManagement extends ListenerAdapter {
         assert guild != null;
 
         if (event.getComponentId().contains("no")) {
-            System.out.println("NO");
             event.reply("")
                     .addEmbeds(stockEmbed("Role Delete", "\nSuccessfully aborted the operation."))
                     .setEphemeral(true)
@@ -152,13 +152,19 @@ public class MinkBotRoleManagement extends ListenerAdapter {
         String roleId = event.getComponentId();
         Role role = guild.getRoleById(roleId);
         if (event.getComponentId().equals(roleId) && !event.getComponentId().contains("no")) {
-            System.out.println("YES");
-            assert role != null;
-            role.delete().queue();
-            event.reply("")
-                    .addEmbeds(stockEmbed("Role Delete", "\nSuccessfully deleted the role \"" + role.getName() + "\"."))
-                    .setEphemeral(true)
-                    .queue();
+            try {
+                assert role != null;
+                role.delete().queue();
+                event.reply("")
+                        .addEmbeds(stockEmbed("Role Delete", "\nSuccessfully deleted the role \"" + role.getName() + "\"."))
+                        .setEphemeral(true)
+                        .queue();
+            } catch (HierarchyException e) {
+                event.reply("")
+                        .addEmbeds(stockEmbed("Role Delete", "\nCannot delete roles that are higher or equal!"))
+                        .setEphemeral(true)
+                        .queue();
+            }
         }
     }
 
