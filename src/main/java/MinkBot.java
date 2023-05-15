@@ -10,7 +10,6 @@ import javax.security.auth.login.LoginException;
 public class MinkBot {
     public static void main(String[] args) throws LoginException {
         final String TOKEN = "MTEwNDA1MzUzNjQ1NjcxNjM1MA.GekKDo.7oGIZS7_7BNbLlOGNsNs57TxKyEmVEfBQiSULY";
-        final String key = "AIzaSyAykUFbJyYC3nzEi0FyPlycD2rWsl2oGfQ";
 
         JDABuilder jdaBuilder = JDABuilder.createDefault(TOKEN);
 
