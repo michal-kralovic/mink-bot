@@ -172,6 +172,7 @@ public class MinkBotRoleManagement extends ListenerAdapter {
         super.onSlashCommandInteraction(event);
 
         var role = Objects.requireNonNull(event.getInteraction().getOption("role")).getAsRole();
+        var person = Objects.requireNonNull(event.getInteraction().getOption("person")).getAsMember();
         var colorOption = event.getInteraction().getOption("color");
         Guild guild = event.getGuild();
 
@@ -181,9 +182,10 @@ public class MinkBotRoleManagement extends ListenerAdapter {
             if (isHexadecimalColor(color)) {
                 role.getManager().setColor(Color.decode(color)).queue();
                 assert guild != null;
-                guild.retrieveMember(event.getUser()).queue(member -> {
+                assert person != null;
+                guild.retrieveMember(person).queue(member -> {
                     guild.addRoleToMember(member, role).queue();
-                    event.reply("").addEmbeds(stockEmbed("Roles", "\nSuccessfully gave you the role \"" + role.getName() + "\" with the color: " + color + ".")).setEphemeral(true).queue();
+                    event.reply("").addEmbeds(stockEmbed("Roles", "\nSuccessfully gave " + person.getEffectiveName() + " the role \"" + role.getName() + "\" with the color: " + color + ".")).setEphemeral(true).queue();
                 });
             } else {
                 event.reply("").addEmbeds(stockEmbed("Roles", "Invalid color! (HEX colors only!). Color used: " + color + ".")).setEphemeral(true).queue();
@@ -191,9 +193,10 @@ public class MinkBotRoleManagement extends ListenerAdapter {
 
         } else {
             assert guild != null;
-            guild.retrieveMember(event.getUser()).queue(member -> {
+            assert person != null;
+            guild.retrieveMember(person).queue(member -> {
                 guild.addRoleToMember(member, role).queue();
-                event.reply("").addEmbeds(stockEmbed("Roles", "\nSuccessfully gave you the role \"" + role.getName() + "\".")).setEphemeral(true).queue();
+                event.reply("").addEmbeds(stockEmbed("Roles", "\nSuccessfully gave " + person.getEffectiveName() + " the role \"" + role.getName() + "\".")).setEphemeral(true).queue();
             });
 
         }

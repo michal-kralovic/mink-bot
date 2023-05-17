@@ -33,13 +33,14 @@ public class MinkBot {
                 .addOption(OptionType.STRING, "color", "(OPTIONAL) Set color (hex).", false, false)
                 .queue();
         jda.upsertCommand("updaterole", "Role updating!")
-                        .addOption(OptionType.ROLE, "role", "The role's name!", true, false)
-                        .addOption(OptionType.STRING, "role-name", "(OPTIONAL) Change the role's name.", false, false)
-                        .addOption(OptionType.STRING, "color", "(OPTIONAL) Change color (HEX).", false, false).queue();
+                .addOption(OptionType.ROLE, "role", "The role!", true, false)
+                .addOption(OptionType.STRING, "role-name", "(OPTIONAL) Change the role's name.", false, false)
+                .addOption(OptionType.STRING, "color", "(OPTIONAL) Change color (HEX).", false, false).queue();
         jda.upsertCommand("deleterole", "Role deleting! Be careful!")
-                .addOption(OptionType.ROLE, "role", "The role's name!", true, false).queue();
+                .addOption(OptionType.ROLE, "role", "The role!", true, false).queue();
         jda.upsertCommand("giverole", "Role giving!")
-                        .addOption(OptionType.ROLE, "role", "Get yourself a role!", true, false)
-                        .addOption(OptionType.STRING, "color", "(OPTIONAL) Change color (HEX).", false, false).queue();
+                .addOption(OptionType.ROLE, "role", "The role!", true, false)
+                .addOption(OptionType.USER, "person", "Who do you want to give the role to?", true, false)
+                .addOption(OptionType.STRING, "color", "(OPTIONAL) Change color (HEX).", false, false).queue();
     }
 }
